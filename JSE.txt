@@ -1,0 +1,31 @@
+JavascriptExecutor is an interface
+TakeScreenShot is an interface.?
+
+
+JavascriptExecutor js=(JavascriptExecutor)driver;
+js.execute("document.getElementById('uname').value='Hello world' ",webElement)
+js.execute("arguments[0].click() ",webElement)
+js.execute("arguments[0].scrollIntoView() ",webElement)
+js.execute("arguments[0].setAttribute('style', 'background: yellow; border: 2px solid red;'",webElement)
+js.execute(window.scrollBy(0,250))//scroll down
+js.execute(window.scrollBy(0,-250))//scroll up
+
+
+
+
+
+JavascriptExecutor js=(JavascriptExecutor)driver;
+(JavascriptExecutor)driver.execute("document.getElementById('uname').value='Hello world' ",webElement)
+
+
+
+
+
+class A{
+	A a=new A();
+	a.M1();
+
+	new A().M1();
+
+	  	
+}
