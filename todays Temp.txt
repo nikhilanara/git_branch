@@ -1,0 +1,201 @@
+karate
+testNG
+parallel testing
+POM
+Cucumber + GHERKIN + REPORTING
+Keyword Driven vs bdd.?
+Hybrid
+Data Driven
+postman
+
+###################
+Smoke test.?
+before proceeding with actual test execution, we conduct smoke test to check the stability of the application by navigating to all of the pages & performing some actions 
+###################
+
+##############################################################################
+#########################PAGE OBJECT MODEL#################################
+##############################################################################
+POM Framework 
+dividing application into multiple pages & writing tests according is known as page object model
+
+
+LoginPage
+HomePage
+OrderPlace
+OrderHistory
+
+
+projectMaven
+	src/test/java
+		utility
+		   utilties.java  --> click, set, verify. db connections.(Repeated actions).
+				
+		pages(package)
+			homePage.java --> Object props using @findBy, pageFactory, methods creation
+			OrderHistory.java
+			licensing.java	
+		tests(package)
+			HomePage.java	--> here, we call methods from 'pages' package,, use testNG annotations to prioritize/group cases
+			
+	
+	src/test/resources
+		testNGfile
+			regressionSuite.xml 
+			smokeSuite.xml
+		drivers
+			chrome
+			firefox
+		files
+			excel, csv
+	properties.props --> app userName, pwd, dbHostName, uname, pwd
+
+pom.xml
+	define all the dependencies,
+	while triggering jobs, it scans pom.xml & look for fileName(testNG.xml/anyFileName.java)
+
+pom.xml gets invoked when we use 'mvn test' maven goal
+================================================================================================
+
+####parallel execution -- classes#################
+
+<suite verbose="10" name="Umbrella Full Regression Suite" thread-count="6">
+
+    <test name="Repository Module Ingest File Tests" time-out="600000" parallel="classes"   thread-count="1">
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Repository.DataDeliveryRepositoryIngestProcessingTests"/>
+        </classes>
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Repository.DataDeliveryRepositoryIngestProcessingTests"/>
+        </classes>
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Repository.DataDeliveryRepositoryIngestProcessingTests"/>
+        </classes>
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Repository.DataDeliveryRepositoryIngestProcessingTests"/>
+        </classes>
+    </test>
+</suite>
+########################################
+####parallel =  methods(@Test)#################
+--> thread-count="10" executing 10 threads at a time
+########################################
+ 
+<suite verbose="10" name="Umbrella Full Regression Suite" thread-count="6">
+
+    <test name="Repository Module Ingest File Tests" time-out="600000" parallel="methods"   thread-count="10" time-out="720000">
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Repository.DataDeliveryRepositoryIngestProcessingTests"/>
+        </classes>
+    </test>
+</suite>
+
+########################################
+parallel = "tests"
+########################################
+
+<suite parallel = "tests"> 
+	<test1>
+		<classes>
+			<class a />
+			<class b />
+		</classes>
+	</test1>
+	<test2>
+		<classes>
+			<class v>
+			<class t>
+		</classes>
+	</test2>
+</suite>
+
+################################################################################################################
+########################################    CUCUMBER BDD	################################################
+################################################################################################################
+Cucumber -> Cucumber enables you to write test cases that anyone(Business users/stakeholders/BA) can easily understand regardless of their technical knowledge
+
+package suiteRunner;
+
+import io.cucumber.junit.Cucumber;
+import io.cucumber.junit.CucumberOptions;
+import org.junit.runner.RunWith;
+
+@RunWith(Cucumber.class)
+@CucumberOptions(
+        features = "src/test/resources/features/",
+        tags = {"@UE_Login"},
+        glue = "steps",
+        plugin = {"pretty", "json:target/cucumber-junit-report.json","io.qameta.allure.cucumber4jvm.AllureCucumber4Jvm"}
+)
+
+public class RegressionJUnitTest {
+
+}
+
+@UE @UE_RealTime @UE_Login
+Feature: Login test
+
+  Scenario Outline: login Scenario
+    Given user navigates to the website "www.google.com"
+    When User Navigate to Login Page by clicking on login link
+    And user logs in through Login Window by entering username and password "<username>" "<password>"
+    Then click on login button
+    Then validate home page title to be "Home"
+
+    Examples: 
+      | username | password |
+      | bharath  | b1234    |
+      | nik      | nik1234  |
+
+  Scenario: login Scenario
+    Given user navigates to the website "www.google.com"
+    When User Navigate to Login Page by clicking on login link
+    And user logs in through Login Window by entering username and password1 "username" "password"
+    Then click on login button
+    Then validate home page title to be "Home"
+
+######################################################
+################### GLUE CODE #######################
+
+@Given("user navigates to the website {string}")
+public void user_navigates_to_the_website(String string) {
+    // Write code here that turns the phrase above into concrete actions
+    throw new cucumber.api.PendingException();
+}
+
+@When("User Navigate to Login Page by clicking on login link")
+public void user_Navigate_to_Login_Page_by_clicking_on_login_link() {
+    // Write code here that turns the phrase above into concrete actions
+    throw new cucumber.api.PendingException();
+}
+
+@When("user logs in through Login Window by entering username and password {string} {string}")
+public void user_logs_in_through_Login_Window_by_entering_username_and_password(String string, String string2) {
+    // Write code here that turns the phrase above into concrete actions
+    throw new cucumber.api.PendingException();
+}
+
+
+
+
+
+projectCucumber
+	src/test/java
+		steps(package)
+			Login.java
+			RealTime.java
+			MicroBacth.java
+		utility(package)		
+		   utilties.java  --> click, set, verify. db connections.(Repeated actions).
+
+		runner
+			RegressionJUnitTest.java
+
+	src/test/resources
+		features
+			login.feature
+		files
+			excel, csv
+	properties.props --> app userName, pwd, dbHostName, uname, pwd
+
+pom.xml
