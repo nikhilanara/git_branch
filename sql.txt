@@ -1,0 +1,124 @@
+SprintBacklog --> next sprint task move
+Sprint planning
+Scrum
+Sprint review
+Spring Backlog refinment.?
+
+
+Sprint
+
+burndown
+burnin
+
+
+
+git 
+
+master
+		develop(sebas)
+				fBharath0123(pullRequest)
+				fNikhila
+				alpha
+
+featureBranches
+SmartGit
+
+conflicts.?
+diff
+git diff fileName.java
+
+
+git clone http://www,git
+git checkout develop
+git status
+
+git add fileName.java
+git commit -m "test"
+git push origin develop
+
+
+git pull
+
+
+git stash
+git stash pop
+
+
+git stash pop
+
+
+empID	empName 	empSalary
+1	hbarath		120
+2	kumar		99
+3	ravi		20
+4	nikhila		220
+2	kumarSai	99
+
+
+
+>>Select Salary from emp where empName = "kumar"
+>>Select Salary from emp where empName = "kumar" and empID = 2
+>>Select Salary from emp where empName LIKE "kumar%"
+	empID	empName 	empSalary
+	2	kumar		99
+	2	kumarSai	99
+
+>> Insert into emp values(2,"babji",90)
+>> update emp set empNam = "baratah" where empSalary = 120 AND empID = 1 AND empName = 'hbarath'
+>> Delete emp set empNam = "baratah" where empSalary = 120 AND empID = 1 AND empName = 'hbarath'
+
+>>Select MaX(Salary) from emp
+
+empSalary
+-------
+220 
+
+Select Max(Salary) from emp where Salary not in( Select MaX(Salary) from emp)
+
+
+empSalary
+-------
+120 
+
+
+3rd Highest Salary
+
+20, 99, 120
+220, 120, 99
+99
+
+>>Select TOP 1 Salary from (Select Top 3 Salary from emp Order by desc) as emp 
+	 Salary 
+	-------
+	220,
+	120,
+	99
+
+
+>>Select Top 1 salary from (Select Top 3 salary from emp order by Salary DESC) as table
+	empSalary
+	-------
+	99
+
+
+################################################
+
+JOINS.?
+
+Inner -- matching rows from both the table
+LEFT  -- The LEFT JOIN keyword returns all records from the left table (table1), and the matched records from the right table (table2). 
+RIGHT  --The RIGHT JOIN keyword returns all records from the left table (table1), and the matched records from the right table (table2). 
+
+SELECT Customers.CustomerName, Orders.OrderID
+FROM Customers
+LEFT JOIN Orders 
+		ON Customers.CustomerID = Orders.CustomerID
+
+		
+
+primary key.? unique key for that table.? like empID.
+ForiegnKey -- Re
+
+
+
+
