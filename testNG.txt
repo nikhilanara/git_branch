@@ -1,0 +1,62 @@
+Parallel testing in testNG -chrome, firefox & IE
+
+##########################################################################
+##########################################################################
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite verbose="10" name="Umbrella Smoke Suite"  parallel="tests">
+
+
+    <test name="SmokeTestsInParallel"  thread-count="4" >
+        <parameter name="browser" value="chrome" />
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Repository.DataDeliveryRepositoryTests"/>
+            <class name="com.DataDelivery.automation.automation.tests.HomePage.DataDeliveryHomeTests"/>
+        </classes>
+    </test>
+
+
+    <test name="SmokeTestsInParallel" >
+        <parameter name="browser" value="firefox" />
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Repository.DataDeliveryRepositoryTests"/>
+            <class name="com.DataDelivery.automation.automation.tests.HomePage.DataDeliveryHomeTests"/>
+        </classes>
+    </test>
+    
+    <test name="SmokeTestsInParallel" >
+        <parameter name="browser" value="ie" />
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Repository.DataDeliveryRepositoryTests"/>
+            <class name="com.DataDelivery.automation.automation.tests.HomePage.DataDeliveryHomeTests"/>
+        </classes>
+    </test>
+    
+</suite>
+
+
+##########################################################################
+
+@Parameters({"browser"})
+public void invokeBrowser(String browser){
+	if(browser.equalsIgnoreCase("chrome"){
+		//init chrome Driver
+	}else if(browser.equalsIgnoreCase("firefox"){
+		//init firefox Driver
+	}
+}
+
+##########################################################################
+##########################################################################
+
+Parallel testing in testNG - only chrome
+
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite verbose="10" name="Umbrella Full Regression Suite" >
+
+    <test name="Formats Module Tests" time-out="600000" parallel="methods" thread-count="4">
+        <classes>
+            <class name="com.DataDelivery.automation.automation.tests.Formats.DataDeliveryFormatsTests"/>
+        </classes>
+    </test>
+
+</suite>
