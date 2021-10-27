@@ -1,0 +1,24 @@
+BufferredReader br  = new BufferredReader(new FileReader(""));
+String readLune = br.readline();
+while(readLune!=null){
+	readLine=br.readline();
+	if(readLine.equals("ss"){
+	}
+}
+
+
+BufferredReader br  = new BufferredReader(new File(""));
+String readLune = br.readline();
+while(readLune!=null){
+	readLine=br.readline();
+	if(readLine.equals("ss"){
+	}
+}
+
+BufferredReader br  = new BufferredReader(new File(""));
+String readLune = br.readline();
+while(readLune!=null){
+	readLine=br.readline();
+	if(readLine.equals("ss"){
+	}
+}
