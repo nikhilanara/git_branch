@@ -1,0 +1,249 @@
+#primary address(add1)##############																														-----------------------------------------------------
+erich				dept		item
+-----				---		--				
+11247	House Number		14		16
+11023	Street Name		14		16
+11249	Pre Direction		14		16
+10633	Street Suffix		14		16
+11359	Post Direction		14		16
+###########################
+
+###Secondary address(add2)
+10112	Unit Designator		14		16
+10887	Unit Designator Number	14		16
+##############
+
+
+Hygiene --> cleansing address & displays the entire address including state, city, zip
+	    it splits the add1 & add2 into address parts in the json reponse
+omniviwew --> hashing data/encrypting data
+sources
+s1(blank)    s2(31909)   s3(31909)   s4(hjutyu)    s5    s6(31909)    s7(31908) 
+
+
+	  Experian(31909)   it results you the correct output
+
+##########################################################################################
+Hygient RequestBody -- in the below reqbody, we have given only add1, zip && requesting for correct address 
+-----------------------------------------------------------------------------------------------------
+{
+    "Run_Flow": {
+        "Standard_Service_Elements": {
+            "Operation": "Run_Flow_Realtime",
+            "Request_Info": {
+                "Client_Key": "2813"
+            }
+        },
+        "Input": {
+            "fname": "",
+            "mname": "",
+            "lname": "",
+            "addr1": "563 E 23RD ST",
+            "addr2": "",
+            "city": "",
+            "state": "",
+            "zip": "07514",
+            "country": "",
+            "phone": "",
+            "email": "",
+            "Insert_Party_ID": "2813"
+        },
+        "Flow": {
+            "Flow_Options": {
+                "Show_Keys": "false"
+            },
+            "model": "Custom",
+            "count": "1",
+            "Steps": [
+                {
+                    "Sequence": "1",
+                    "Name": "hygiene",
+                    "Step_Options": {
+                        "Return_Hygiene_Fields": "true",
+                        "hygiene_return_field_list": "ALL"
+                    }
+                }
+            ]
+        }
+    }
+}
+Hygient Response -- it displaying add1 as address parts & additionally it also displaying city, state & zip 
+{
+    "FlowControl_Return_Code": "FC000",
+    "hygiene_results": {
+        "hy_zip11": "07514256099",
+        "hy_street_name": "23RD",
+        "hy_dpc": "99",
+        "hy_z4fn": "1",
+        "hy_unit": "",
+        "hy_pre_directional": "E",
+        "hy_post_directional": "",
+        "hy_MatchLevel": "1",
+        "hy_state": "NJ",
+        "hy_check_digit": "2",
+        "hy_city": "PATERSON",
+        "hy_crrt": "C040",
+        "hy_errcode": "001251",
+        "hy_street_number": "563",
+        "hy_zip4": "2560",
+        "hy_street_suffix": "ST",
+        "hy_urb": "",
+        "hy_addr3": "",
+        "hy_addr1": "563 E 23RD ST",
+        "hy_addr2": "",
+        "hy_zip": "07514",
+        "hy_unit_number": ""
+    },
+    "transaction_id": 538951
+}
+##########################################################################################
+UE(universal enrichment)
+requesting user details through 'erich' field & validate return codes & billing criteria
+
+what we validate in resoponse.?
+	returnCode & transction_id
+	transction_id --> we use this id & execute in db to check the billing details
+	return code -->
+
+UE request
+---------
+{
+    "erich": "10361,10157,11247,11023,11249,10633,11359,10112,10887,10370,10114,29789,10581,3415,10796,10789,10794,10795,11385,11387,10579,11357,13272",
+    "fname": "CANDYCE",
+    "mname": "W",
+    "lname": "BERGSTROM",
+    "addr1": "",
+    "addr2": "",
+    "city": "",
+    "state": "",
+    "zip": "33158",
+    "zip_radius": "0",
+    "phone": "",
+    "email": "",
+    "tablecode": "0",
+    "Insert_Party_ID": "2813",
+    "Show_Keys": "true"
+}
+response
+-------
+{
+    "address_id": "191548113337865545",
+    "household_id": "-6397643992959297308",
+    "individual_id": "3429578343666894848",
+    "match_code": "",
+    "response_code": "VG000",
+    "transaction_id": 535527
+}	
+
+
+negative testing, for each invalid/valid we display return code & transaction id 
+
+
+>>name less than 3 char
+
+{
+    "erich": "10361,10157,11247,11023,11249,10633,11359,10112,10887,10370,10114,29789,10581,3415,10796,10789,10794,10795,11385,11387,10579,11357,13272",
+    "fname": "C",
+    "mname": "",
+    "lname": "B",
+    "addr1": "767567 87678",
+    "addr2": "hjgjhgjhg igtuyi",
+    "city": "",
+    "state": "",
+    "zip": "33158",
+    "zip_radius": "0",
+    "phone": "",
+    "email": "",
+}
+>> invalid data type to the fName	
+{
+    "erich": "10361,10157,11247,11023,11249,10633,11359,10112,10887,10370,10114,29789,10581,3415,10796,10789,10794,10795,11385,11387,10579,11357,13272",
+    "fname": 123,
+    "mname": "",
+    "lname": "B",
+    "addr1": "jkhkj",
+    "addr2": "lkjklj",
+    "city": "",
+    "state": "",
+    "zip": "33158",
+    "zip_radius": "0",
+    "phone": "",
+    "email": "",
+}
+
+>> without add1 & add2
+
+{
+    "erich": "10361,10157,11247,11023,11249,10633,11359,10112,10887,10370,10114,29789,10581,3415,10796,10789,10794,10795,11385,11387,10579,11357,13272",
+    "fname": 123,
+    "mname": "",
+    "lname": "B",
+    "addr1": "",
+    "addr2": "",
+    "city": "",
+    "state": "",
+    "zip": "33158",
+    "zip_radius": "0",
+    "phone": "",
+    "email": "",
+}
+
+
+
+
+=============================================
+			##Below 3 lines are common for everything
+			RestAssured.baseURI = "http://alndapcw01.aln.experian.com:8186//CCIR/linkage";
+			HttpRequest httpRequest = RestAssured.given();
+			httpRequest.header("Content-Type", "application/json");
+		
+
+			httpRequest.body(new FileReader("src\\test\\resources\\input1.json"));
+			Reponse response = httpRequest.post();
+			JsonPath jsonResponse = response.jsonPath();
+
+{
+    "address_id": "191548113337865545",
+    "household_id": "-6397643992959297308",
+    "individual_id": "3429578343666894848",
+    "match_code": "",
+    "response_code": "VG000",
+    "transaction_id": 535527
+}
+			//validating response/getting reposne
+			String transID = jsonResponse.getString("transaction_id");
+			String retCode = jsonResponse.getString("response_code"");
+			if(retCode.equals(responseCode){//comparing runTime result with expected result
+			}
+
+/// array response or to feth inner elements --> use getMap() method/function
+{
+    "FlowControl_Return_Code": "FC000",
+    "hygiene_results": {
+        "hy_z4fn": "74006721306",
+        "hy_street_name": "WASHINGTON",
+    },
+
+    "transaction_id": 535253
+}
+
+
+		        jsonResponse.getMap(("hygiene_results")).get("hy_z4fn")
+			String str = jsonResponse.getString("transaction_id");
+
+
+	//Reading file from csv
+	BufferedReader reader = new BufferedReader(new FileReader(new File(csvFilePath)))) 
+
+	class.forName(com.java);//class not found exception occurs when it does not find this jar/statment
+	Connection conn=DriverManager.getConnection("dburl,schemaName, userName, pwd");
+	Statement st=con.createStatement();
+	ResultSet rs=st.executeQuery(" Select * from tableName where transcationid id "+transID+" ")
+	while(rs.next()){//check if the query is returning result or not,
+		//split excepted values with ','
+		rs.getString("columnName");
+		res.getString(1);//columnIndex
+	}
+
+==================================
+
