@@ -1,0 +1,11 @@
+we need to use java jdbc jar/dependency in order to work with sql connections in java
+
+
+class.forName(com.java);//class not found exception occurs when it does not find this jar/statment
+Connection conn=DriverManager.getConnection("dburl,schemaName, userName, pwd");
+Statement st=con.createStatement();
+ResultSet rs=st.executeQuery(" Select empName from emp where empname like "%bhara" ")
+while(rs.next()){//check if the query is returning result or not,
+	rs.getString("columnName");
+	res.getString(1);//columnIndex
+}
