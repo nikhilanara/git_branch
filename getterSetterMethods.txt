@@ -1,0 +1,22 @@
+//getter Setter methods -- binding data with methods
+class Nikhila{
+	private String empName; 
+
+	public void setEmpName(String empName){
+		this.empName = empName;
+	}
+	public String getEmpName(){
+		return empName;
+	}
+}
+
+
+
+class ABC extends Nikhila{
+	new ABC().setEmpName("nik");
+	String name=new ABC().getempName();
+	
+	new ABC().setEmpName("bharath");
+	String name=new ABC().getempName();
+	
+}
