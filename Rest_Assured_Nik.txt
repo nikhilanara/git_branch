@@ -1,0 +1,127 @@
+package steps;
+
+import java.io.FileReader;
+import java.io.IOException;
+import java.net.ConnectException;
+import java.util.Map;
+
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
+import org.junit.Assert;
+
+import io.cucumber.java.en.And;
+import io.cucumber.java.en.Given;
+import io.cucumber.java.en.Then;
+import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+import utils.Config;
+import utils.DBConnectorAndComparator;
+
+public class RealTime {
+	RequestSpecification httpRequest;
+	Response response;
+	JsonPath jsonResponse;
+	String url;
+
+	@Given("^User performs RT post request with input \"([^\"]*)\"$")
+	public void userPerformsRTPostRequestWithInput(String inputPayload) throws IOException, ParseException {
+		try {
+			String folderName=getFolderName(inputPayload.split("_")[0]);
+			RestAssured.baseURI = url;
+			httpRequest = RestAssured.given();
+			httpRequest.header("Content-Type", "application/json");
+			
+			JSONParser parser = new JSONParser();
+			Object obj = parser.parse(new FileReader("src/test/resources/InputTestData/" + folderName + "/RealTime/" + inputPayload));
+			JSONObject jsonObject = (JSONObject) obj;
+			String inputRequest = jsonObject.toJSONString();
+
+			httpRequest.body(inputRequest);
+			response = httpRequest.post();
+			jsonResponse = response.jsonPath();
+		} catch (ConnectException e) {
+				System.out.println("########## "+Config.url + " Service is down ##########");
+				System.exit(1);
+		}catch (Exception e) {
+				System.out.println("########## Something went wrong.! "+e.getMessage()+" ##########");
+		}
+
+	}
+
+
+	@Then("^User sees HY return code \"([^\"]*)\"$")
+	public void userSeesReturnCode_HY(String responseCode) {
+		String[] returnCodeList = responseCode.split(",");
+		for (int index = 1; index <= returnCodeList.length; index++) {
+			if (jsonResponse.getString("hygiene_results") != null) {
+				Map<String, Object> responseMap = jsonResponse.getMap(("hygiene_results"));
+				Assert.assertEquals(returnCodeList[index - 1], responseMap.get("hy_z4fn"));
+				System.out.println("Transaction_Id_" + index + " is - " + jsonResponse.getString("transaction_id"));
+			}
+		}
+	}
+	
+	@Then("^User checks return code for Hygiene, OmniView and FlowControl \"([^\"]*)\"$")
+	public void userSeesReturnCode_HYOV(String responseCode) {
+		
+		String[] returnCodeList = responseCode.split(",");//VG000, -1 -99
+		
+		try {Assert.assertEquals(returnCodeList[0].trim(), jsonResponse.getMap(("hygiene_results")).get("hy_z4fn"));}
+		catch (Exception e) {System.out.println("failed to verify hygiene result ");}
+		
+		try{Assert.assertEquals(returnCodeList[1].trim(), jsonResponse.getMap(("pinning_results")).get("pinning_Return_Code"));}
+		catch (Exception e) {System.out.println("failed to verify omniView result ");}
+		
+		System.out.println("Transaction_Id"  + " is - " + jsonResponse.getString("transaction_id"));
+	}
+	
+	@Then("^User see return code \"([^\"]*)\"$")
+	public void userSeeReturnCode(String responseCode) {
+		if (!responseCode.equalsIgnoreCase("null") && !responseCode.equals("")) {
+			String[] returnCodeList = responseCode.split(",");
+			for (int index = 1; index <= returnCodeList.length; index++) {
+				if (jsonResponse.getString("match_maker_results") != null) {
+					Map<String, Object> responseMap = jsonResponse.getMap(("match_maker_results"));
+					Assert.assertEquals(returnCodeList[index - 1], responseMap.get("MatchMaker_Return_Code"));
+					System.out.println("Transaction_Id_" + index + " is - " + jsonResponse.getString("transaction_id"));
+				} else {
+					Assert.assertEquals(jsonResponse.getString("response_code"), returnCodeList[0]);
+					System.out.println("Transaction_Id is - " + jsonResponse.getString("transaction_id"));
+				}
+			}
+		}
+	}
+
+	@And("User should see RT billing line items as {string}")
+	public void userShouldSeeBillingLineItemsSameAs(String fileName) {
+		String transaction_id = jsonResponse.getString("transaction_id");
+		System.out.println("    Transaction_Id is - " + transaction_id);
+		Assert.assertFalse(jsonResponse.prettify(), transaction_id.equals("0"));
+		DBConnectorAndComparator.connectAndCompare(transaction_id, fileName, "RT");
+		System.out.println("    DB records are matching.");
+	}
+
+	private String getFolderName(String folderName) {
+		if (folderName.equals("MM")) {
+			folderName = "MatchMaker";
+			url = Config.url + Config.path_MM_RealTime;
+		} else if (folderName.equals("HY")) {
+			folderName = "Hygiene";
+			url = Config.url + Config.path_HY_RealTime;
+		} else if (folderName.equals("OV")) {
+			folderName = "OmniView";
+			url = Config.url + Config.path_OV_RealTime;
+		} else if (folderName.equals("OV2")) {
+			folderName = "OmniView2";
+			url = Config.url + Config.path_OV2_RealTime;
+		} else if (folderName.equals("HYOV")) {
+			folderName = "HYOV";
+			url = Config.url + Config.path_HY_RealTime;
+		}
+		return folderName;
+	}
+
+}
